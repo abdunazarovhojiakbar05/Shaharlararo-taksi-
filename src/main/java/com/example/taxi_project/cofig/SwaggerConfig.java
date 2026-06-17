@@ -89,11 +89,10 @@ public class SwaggerConfig {
     public GroupedOpenApi authApi() {
         return GroupedOpenApi.builder()
                 .group("1. Auth")
-                .pathsToMatch("/api/auth/**", "/api/v1/auth/**")
-                .addOperationCustomizer(globalHeaders())
+                .pathsToMatch("/api/auth/**")
                 .build();
     }
-
+/*
     @Bean
     public GroupedOpenApi parentApi() {
         return GroupedOpenApi.builder()
@@ -113,7 +112,7 @@ public class SwaggerConfig {
                 )
                 .addOperationCustomizer(globalHeaders())
                 .build();
-    }
+    }*/
 /*
     @Bean
     public GroupedOpenApi locationApi() {

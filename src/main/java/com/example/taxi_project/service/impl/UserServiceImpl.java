@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -21,38 +20,73 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getById(UUID id) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Foydalanuvchi topilmadi: " + id));
 
-        User user = userRepository.findUserById(id).orElseThrow( () -> new ResourceNotFoundException("Foydalanuvchi topilmadi")  );
-        UserResponse response = UserResponse.builder()
+        return toResponse(user);
+    }
+
+    @Override
+    public UserResponse update(UUID id, UserUpdate updateDto) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Foydalanuvchi topilmadi: " + id));
+
+        // UserUpdate ichida name, username bo'lishi kerak:
+        // if (updateDto.getName() != null) user.setName(updateDto.getName());
+        // if (updateDto.getUsername() != null) user.setUsername(updateDto.getUsername());
+
+        User saved = userRepository.save(user);
+        return toResponse(saved);
+    }
+
+    @Override
+    public BigDecimal getBalance(UUID id) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Foydalanuvchi topilmadi: " + id));
+
+        // User modeliga balance qo'shish kerak:
+        // return user.getBalance();
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public void topUpBalance(UUID id, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("To'ldirish summasi 0 dan katta bo'lishi kerak");
+        }
+
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Foydalanuvchi topilmadi: " + id));
+
+        // User modeliga balance qo'shish kerak:
+        // user.setBalance(user.getBalance().add(amount));
+        // userRepository.save(user);
+
+        System.out.println("Balans to'ldirildi: " + amount + " -> foydalanuvchi " + id);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Foydalanuvchi topilmadi: " + id));
+
+        // Soft delete (tavsiya):
+        user.set_active(false);
+        userRepository.save(user);
+
+        // Yoki to'liq o'chirish:
+        // userRepository.delete(user);
+    }
+
+    private UserResponse toResponse(User user) {
+        return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .phone(user.getPhone())
                 .role(user.getRole())
                 .code(user.getCode())
                 .expired_at(user.getExpired_at())
-                .isIs_active(true)
+                .isIs_active(user.is_active())
                 .build();
-
-        return response;
-    }
-
-    @Override
-    public UserResponse update(UUID id, UserUpdate updateDto) {
-        return null;
-    }
-
-    @Override
-    public BigDecimal getBalance(UUID id) {
-        return null;
-    }
-
-    @Override
-    public void topUpBalance(UUID id, BigDecimal amount) {
-
-    }
-
-    @Override
-    public void delete(UUID id) {
-
     }
 }

@@ -39,7 +39,7 @@ public class User {
 
     private boolean is_active;
 
-    private int code;
+    private String code;
 
     private LocalDateTime expired_at;
 

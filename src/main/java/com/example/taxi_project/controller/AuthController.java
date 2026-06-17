@@ -43,7 +43,8 @@ public class AuthController {
     @Operation(summary = "Ota-ona ro'yxatdan o'tishi", description = "Yangi ota-ona akkaunti yaratadi va qurilma (device) ma'lumotlarini tizimda saqlaydi.")
     @PostMapping("/registration")
     public ResponseEntity<SendOtpResponse> registration(@Valid @RequestBody RegistrationRequestDto requestDto) {
-        return ResponseEntity.ok(authService.registration(requestDto));
+        SendOtpResponse response = authService.registration(requestDto);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Refresh token", description = "Eski yoki muddati tugayotgan refresh token orqali yangi access token va refresh token oladi.")

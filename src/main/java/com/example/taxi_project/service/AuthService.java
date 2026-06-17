@@ -1,9 +1,10 @@
 package com.example.taxi_project.service;
 
 import com.example.taxi_project.dto.auth.*;
+import com.example.taxi_project.model.User;
 
 public interface AuthService {
-    void data(Long telegramId, String firstName, String lastName, String username, String code);
+    User data(String firstName, String username, String code);
 
     String sendCode(String phone);
 

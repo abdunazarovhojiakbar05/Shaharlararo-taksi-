@@ -1,6 +1,6 @@
 package com.example.taxi_project.bot;
 
- import com.example.taxi_project.service.AuthService;
+import com.example.taxi_project.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,8 @@ import java.security.SecureRandom;
 public class AuthBot extends TelegramLongPollingBot {
 
 
-
     @Value("${telegram.bot.token}")
     private String botToken;
-
-
 
 
     @Value("${telegram.bot.username}")
@@ -48,9 +45,8 @@ public class AuthBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
 
             if (text.equals("/start")) {
-                 org.telegram.telegrambots.meta.api.objects.User tgUser = update.getMessage().getFrom();
+                org.telegram.telegrambots.meta.api.objects.User tgUser = update.getMessage().getFrom();
 
-                Long telegramId = tgUser.getId();
                 String firstName = tgUser.getFirstName();
                 String lastName = tgUser.getLastName();
                 String username = tgUser.getUserName();
@@ -58,13 +54,9 @@ public class AuthBot extends TelegramLongPollingBot {
 
                 String code = generateCode();
 
-                authService.data(telegramId, firstName, lastName, username, code);
+                authService.data(firstName, username, code);
 
-                String response = "Sizning kodingiz: " + code + "\n\n" +
-                        "👤 Ism: " + firstName  +  " <= shu nom ostida ilovaga otishingiz mumkin!  \n" +
-                        (lastName != null ? " " + lastName : "") +
-                        (username != null ? "\n🔗 Username: @" + username : "") +
-                        "\n🆔 Telegram ID: " + telegramId;
+                String response = "Sizning kodingiz: " + code + "\n\n" + "👤 Ism: " + firstName + " <= shu nom ostida ilovaga otishingiz mumkin!  \n" + (lastName != null ? " " + lastName : "") + (username != null ? "\n🔗 Username: @" + username : "");
 
                 sendMessage(chatId, response);
             }
@@ -73,21 +65,21 @@ public class AuthBot extends TelegramLongPollingBot {
         }
     }
 
-    public String generateCode(){
+    public String generateCode() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             sb.append(digits.charAt(random.nextInt(digits.length())));
         }
         return sb.toString();
     }
 
-    public void sendMessage(long chatId, String text){
+    public void sendMessage(long chatId, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);
-        try{
+        try {
             execute(sendMessage);
-        }catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }

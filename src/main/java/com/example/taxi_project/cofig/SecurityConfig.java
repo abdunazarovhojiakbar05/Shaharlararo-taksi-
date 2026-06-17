@@ -35,9 +35,12 @@ public class SecurityConfig {
                                 "/swagger-resources/**", "/webjars/**",
                                 "/error"
                         ).permitAll()
-
-
-                ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/registration").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/verify").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+                        .anyRequest().permitAll()
+                    ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

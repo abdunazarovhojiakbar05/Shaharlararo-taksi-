@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         boolean isRevoked = sessionRepository
                                 .findByAccessToken(token)
                                 .map(session -> session.getRevokedAt() != null)
-                                .orElse(true);
+                                .orElse(false);
 
                         if (isRevoked) {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
